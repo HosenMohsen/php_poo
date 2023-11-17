@@ -43,9 +43,15 @@ class Character {
 
 
     public function choosePairOuImpaire($billesRestant) {
-        
-    }
+        $randomBilles = rand(1, $billesRestant);
 
+        if ($randomBilles % 2 == 0) {
+            return "pair";
+     }  
+     else {
+        return  "impair";
+    }
+    }
 
 }
 
@@ -174,6 +180,10 @@ $hero3 = new Hero("Cho Sang-woo", 35, 3, 0, "POUR LA VICTOIRE");
 $heroes = [$hero1, $hero2, $hero3];
 $selectedHero = Utils::getRandomHero($heroes);
 
+$pairOuImpair = $selectedHero->choosePairOuImpaire($selectedHero->getNbilles());
+echo " Le choix du héros est $pairOuImpair";
+ echo "<br>";
+
 $facile = 5;
 $difficile = 10;
 $impossible = 20;
@@ -181,6 +191,8 @@ $list_difficultes = [$facile, $difficile, $impossible];
 $selectedDifficulties = Utils::getRandomDifficulties($list_difficultes);
 echo $selectedDifficulties;
 echo '<br>';
+
+
 
 for ($i = 1; $i <= $selectedDifficulties; $i++) {
     $name = "Enemy$i";
