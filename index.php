@@ -1,14 +1,58 @@
 <?php
 
+// Projet : Squid Game
+// Auteur :  Mohsen Hosen
+// J'ai utlisié la programmation orienté objet pour ce projet, j'ai créé une classe Game, 
+// une classe Character, une classe Hero, une classe Enemy et une classe Utils.
+// J'ai utilisé la méthode construct pour initialiser les attributs de chaque classe.
+// Pour chaque classe j'ai utilisé des getters et des setters pour récupérer et modifier les attributs.
+
+
 
 
 
 
 class Game {
     
-    
+    public $player;
 
-public function __construct() {
+    public function __construct($player) {
+
+        $this->player = $player;
+
+    }
+
+    public function start() {
+        echo "Le jeu commence";
+    
+    }
+
+    public function playEncouters($enemies) {
+        foreach ($enemies as $enemy) {
+            echo  "Billes restantes dans la main du joueur de  départ  {$this->player->getMarbles()}";
+
+        $pairOuImpairHero = $this->player->choosePairOuImpaire($this->player->getMarbles());
+        echo "Le choix du héro est $pairOuImpairHero";
+        echo "<br>";
+
+        $pairOuImpairEnemy = $enemy->choosePairOuImpaire($enemy->getMarbles());
+        echo "Le choix de l'ennemi est $pairOuImpairEnemy {$enemy->getName()}";
+        echo "<br>";
+
+
+        if ($pairOuImpairHero === $pairOuImpairEnemy) {
+            $this->player->setMarbles($this->player->getMarbles() + $enemy->getMarbles() + $this->player->getBonus());
+            echo "Victoire ! Vous avez maintenant {$this->player->getMarbles()} billes";
+            echo "<br>";
+        } else {
+            $this->player->setMarbles($this->player->getMarbles() - $enemy->getMarbles() - $this->player->getMalus());
+            echo "Défaite ! Vous avez maintenant {$this->player->getMarbles()} billes";
+            echo "<br>";
+        }
+    
+    }
+
+
 
     }
 }
@@ -16,12 +60,12 @@ public function __construct() {
 class Character {
 
     public $name;
-    public $nbilles;
+    public $marbles;
 
-    public function __construct($name, $nbilles) { 
+    public function __construct($name, $marbles) { 
 
         $this->name = $name;
-        $this->nbilles = $nbilles;
+        $this->marbles = $marbles;
 
     }
 
@@ -29,16 +73,16 @@ class Character {
         return $this->name;
     }
 
-    public function getNbilles() {
-        return $this->nbilles;
+    public function getMarbles() {
+        return $this->marbles;
     }
 
     public function setName($name) {
         $this->name = $name;
     }
 
-    public function setNbilles($nbilles) {
-        $this->nbilles = $nbilles;
+    public function setMarbles($marbles) {
+        $this->marbles = $marbles;
     }
 
 
@@ -62,13 +106,13 @@ class Hero extends Character {
     public $malus;
     public $screem_war;
     public $name;
-    public $nbilles;
+    public $marbles;
 
 
-    public function __construct($name, $nbilles, $bonus, $malus, $screem_war) {  
+    public function __construct($name, $marbles, $bonus, $malus, $screem_war) {  
 
         $this->name = $name;
-        $this->nbilles = $nbilles;
+        $this->marbles = $marbles;
         $this->bonus = $bonus;
         $this->malus = $malus;
         $this->screem_war = $screem_war;
@@ -99,13 +143,6 @@ class Hero extends Character {
         $this->screem_war = $screem_war;
     }
 
-/*    private function checkPair(){
-       $this->getMarbles();
-       if ($this->getName() % 2 == 0) {
-        return true;
-    } 
-    return false;
-} */
 }
 
 class Enemy extends Character {
@@ -126,17 +163,12 @@ class Enemy extends Character {
         return $this->age;
     }
 
-    public function getMarbles(){
-        return $this->marbles;
-    }
-
+   
     public function setAge( $age ) {
         $this->age = $age;
     }
 
-    public function setMarbles( $marbles ) {
-        $this->marbles = $marbles;
-    }
+    
 
 }
 
@@ -180,30 +212,41 @@ $hero3 = new Hero("Cho Sang-woo", 35, 3, 0, "POUR LA VICTOIRE");
 $heroes = [$hero1, $hero2, $hero3];
 $selectedHero = Utils::getRandomHero($heroes);
 
-$pairOuImpair = $selectedHero->choosePairOuImpaire($selectedHero->getNbilles());
-echo " Le choix du héros est $pairOuImpair";
- echo "<br>";
-
 $facile = 5;
 $difficile = 10;
 $impossible = 20;
 $list_difficultes = [$facile, $difficile, $impossible];
 $selectedDifficulties = Utils::getRandomDifficulties($list_difficultes);
-echo $selectedDifficulties;
+
+/* $pairOuImpair = $selectedHero->choosePairOuImpaire($selectedHero->getMarbles());
+echo " Le choix du héros est $pairOuImpair";
+ echo "<br>"; */
+
+
+echo "Votre Hero sélectionné est : {$selectedHero->getName()}, vous avez  {$selectedHero->getMarbles()} billes, votre bonus est de {$selectedHero->getBonus()}, et votre malus est de  {$selectedHero->getMalus()}, pour vous motiver vous aimez bien dire {$selectedHero->getScreem()}\n";
+echo "<br>";
+echo "Vous allez affrontrer $selectedDifficulties ennemis différents";
+
+
+
 echo '<br>';
 
 
-
+$enemies = [];
 for ($i = 1; $i <= $selectedDifficulties; $i++) {
     $name = "Enemy$i";
     $marbles = rand(1, 20);
     $age = rand(1, 90);
-    $Enemy = new Enemy($name, $marbles, $age);
-    echo $Enemy->getName();
-   /*  echo  "$name = nex, Marbles: $marbles, Age: $age"; */
-    echo "<br>";
+    $enemies[] = new Enemy($name, $marbles, $age);
 }
 
-echo "Hero sélectionné: {$selectedHero->getName()}, Billes: {$selectedHero->getNbilles()}, Bonus: {$selectedHero->getBonus()}, Malus: {$selectedHero->getMalus()}, Cri de guerre: {$selectedHero->getScreem()}\n";
+
+$game = new Game($selectedHero);
+$game->playEncouters($enemies);
+
+/* $pairOuImpair = $Enemy->choosePairOuImpaire($Enemy->getMarbles());
+echo " Le choix de l'enemi est $pairOuImpair " .  $Enemy->getName();
+ echo "<br>"; */
+
 
 ?>
