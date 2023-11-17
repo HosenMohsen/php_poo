@@ -28,8 +28,13 @@ class Game {
     }
 
     public function playEncouters($enemies) {
+        $enemyIndex = 0;
+        
         foreach ($enemies as $enemy) {
+
+            echo "<br>";
             echo  "Billes restantes dans la main du joueur de  départ  {$this->player->getMarbles()}";
+            echo "<br>";
 
         $pairOuImpairHero = $this->player->choosePairOuImpaire($this->player->getMarbles());
         echo "Le choix du héro est $pairOuImpairHero";
@@ -38,18 +43,38 @@ class Game {
         $pairOuImpairEnemy = $enemy->choosePairOuImpaire($enemy->getMarbles());
         echo "Le choix de l'ennemi est $pairOuImpairEnemy {$enemy->getName()}";
         echo "<br>";
+        echo "Il a {$enemy->getMarbles()} billes";
+        echo "<br>";
 
 
         if ($pairOuImpairHero === $pairOuImpairEnemy) {
             $this->player->setMarbles($this->player->getMarbles() + $enemy->getMarbles() + $this->player->getBonus());
-            echo "Victoire ! Vous avez maintenant {$this->player->getMarbles()} billes";
+            echo "Bravo vous avez bien déviné ! Vous avez maintenant {$this->player->getMarbles()} billes";
             echo "<br>";
+            echo "{$this->player->getScreem()}";
+            echo "<br>";
+            echo "Vous avez gagné contre l'ennemi {$enemy->getName()} qui avait {$enemy->getMarbles()} billes";
+            echo "<br>";
+            $enemy->setMarbles(0);
+
         } else {
             $this->player->setMarbles($this->player->getMarbles() - $enemy->getMarbles() - $this->player->getMalus());
-            echo "Défaite ! Vous avez maintenant {$this->player->getMarbles()} billes";
+            echo "Dommage, il vous reste à présent {$this->player->getMarbles()} billes";
             echo "<br>";
+            echo "Vous avez perdu contre l'ennemi {$enemy->getName()} qui avait {$enemy->getMarbles()} billes";
+            echo "<br>";
+            $enemy->setMarbles($enemy->getMarbles() + $enemy->getMarbles() + $this->player->getMalus());
+
+            $enemyIndex = 0;
         }
-    
+        
+        $enemyIndex++;
+
+        if($this->player->getMarbles() <= 0) {
+            echo "Vous avez perdu la partie";
+            echo "<br>";
+            break;
+        }
     }
 
 
